@@ -564,7 +564,7 @@ export default function AdminPage() {
                     </div>
 
                     {editingContentId === content.id ? (
-                      <div className="flex-1 flex flex-col gap-3">
+                      <div className="flex-1 min-w-0 flex flex-col gap-3">
                         <textarea
                           value={editContentText}
                           onChange={(e) => setEditContentText(e.target.value)}
@@ -607,10 +607,10 @@ export default function AdminPage() {
                               href={content.linkUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm font-medium text-secondary hover:text-primary transition-colors flex items-center mt-3 break-all"
+                              className="text-sm font-medium text-secondary hover:text-primary transition-colors flex items-start mt-3 group/link"
                             >
-                              <ExternalLink className="w-4 h-4 mr-1.5 shrink-0" />
-                              {content.linkUrl}
+                              <ExternalLink className="w-4 h-4 mr-1.5 shrink-0 mt-0.5" />
+                              <span className="break-all min-w-0">{content.linkUrl}</span>
                             </a>
                           )}
                         </div>
