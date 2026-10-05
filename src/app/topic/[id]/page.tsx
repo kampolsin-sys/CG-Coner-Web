@@ -62,7 +62,7 @@ export default async function TopicPage({ params }: { params: { id: string } }) 
                       rel="noopener noreferrer"
                       className="inline-flex items-center text-base font-semibold text-white bg-secondary hover:bg-primary transition-colors py-2 px-6 rounded-full shadow-sm"
                     >
-                      {content.linkUrl.toLowerCase().endsWith('.pdf') ? "เปิดเอกสาร PDF" : (content.linkUrl.includes('/uploads/') ? "ดูไฟล์แนบ" : "อ่านรายละเอียดเพิ่มเติม")}
+                      {content.linkUrl.toLowerCase().endsWith('.pdf') ? "เปิดเอกสาร PDF" : (content.linkUrl.includes('/uploads/') ? "ดูไฟล์แนบ" : "คลิก")}
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </a>
                   )}
