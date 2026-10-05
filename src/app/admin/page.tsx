@@ -597,9 +597,9 @@ export default function AdminPage() {
                       </div>
                     ) : (
                       <>
-                        <div className={`flex-1 ${content.isHidden ? 'opacity-60' : ''}`}>
-                          <p className="text-[15px] text-gray-800 leading-relaxed whitespace-pre-wrap">
-                            {content.isHidden && <span className="inline-block text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full border border-orange-200 mr-2 align-middle">ถูกซ่อน</span>}
+                        <div className={`flex-1 min-w-0 ${content.isHidden ? 'opacity-60' : ''}`}>
+                          <p className="text-[15px] text-gray-800 leading-relaxed whitespace-pre-wrap break-words">
+                            {content.isHidden && <span className="inline-block text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full border border-orange-200 mr-2 align-middle shrink-0">ถูกซ่อน</span>}
                             {content.text}
                           </p>
                           {content.linkUrl && (
@@ -607,9 +607,9 @@ export default function AdminPage() {
                               href={content.linkUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm font-medium text-secondary hover:text-primary transition-colors flex items-center mt-3 w-fit"
+                              className="text-sm font-medium text-secondary hover:text-primary transition-colors flex items-center mt-3 break-all"
                             >
-                              <ExternalLink className="w-4 h-4 mr-1.5" />
+                              <ExternalLink className="w-4 h-4 mr-1.5 shrink-0" />
                               {content.linkUrl}
                             </a>
                           )}
