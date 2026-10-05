@@ -85,23 +85,49 @@ export default function AdminPage() {
     if (!file) return;
 
     setLoadingState(true);
-    const formData = new FormData();
-    formData.append("file", file);
 
     try {
-      const res = await fetch(`/api/upload?crop=${crop}`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.url) {
-        setUrlState(data.url);
+      if (crop) {
+        // อัปโหลดรูปภาพที่ต้องผ่านการ Crop บน Server (ขนาดไฟล์ไม่ควรใหญ่มาก)
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch(`/api/upload?crop=true`, {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        if (data.url) setUrlState(data.url);
+        else alert("อัปโหลดไฟล์ล้มเหลว");
       } else {
-        alert("อัปโหลดไฟล์ล้มเหลว");
+        // อัปโหลด PDF หรือไฟล์อื่นๆ ยิงตรงเข้า Supabase เพื่อหลีกเลี่ยงข้อจำกัดไฟล์ 4.5MB ของ Vercel
+        const ext = file.name.split('.').pop() || 'bin';
+        const basename = file.name.replace(`.${ext}`, '').replace(/[^a-zA-Z0-9]/g, "_");
+        const filename = `${basename}-${Date.now()}-${Math.round(Math.random() * 1000)}.${ext}`;
+        
+        // 1. ขอ URL ชั่วคราว (Presigned URL) จากเซิร์ฟเวอร์
+        const tokenRes = await fetch(`/api/upload/presign`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename, contentType: file.type || "application/pdf" })
+        });
+        
+        if (!tokenRes.ok) throw new Error("Failed to get presigned URL");
+        const { signedUrl, publicUrl } = await tokenRes.json();
+        
+        // 2. อัปโหลดไฟล์ตรงเข้า Supabase Storage
+        const uploadRes = await fetch(signedUrl, {
+          method: "PUT",
+          headers: { "Content-Type": file.type || "application/pdf" },
+          body: file
+        });
+        
+        if (!uploadRes.ok) throw new Error("Direct upload failed");
+        
+        setUrlState(publicUrl);
       }
     } catch (error) {
       console.error(error);
-      alert("เกิดข้อผิดพลาดในการอัปโหลดไฟล์");
+      alert("เกิดข้อผิดพลาดในการอัปโหลดไฟล์ (อาจจะไฟล์ใหญ่เกินไป หรือเซิร์ฟเวอร์ขัดข้อง)");
     } finally {
       setLoadingState(false);
     }
